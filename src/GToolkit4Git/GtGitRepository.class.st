@@ -599,9 +599,9 @@ GtGitRepository >> gtChangesFor: aView context: aContext [
 	<gtView>
 	<gtRepositoryView>
 	
-	| aViewModel changes chosen viewMap|
+	| aViewModel changes chosen boxes|
 	chosen := Set new.
-	viewMap := Dictionary new. "item -> checkbox"
+	boxes := OrderedCollection new.
 
 	 (self isMissing  
 		or: [ self workingCopy isDetached not
@@ -651,7 +651,7 @@ GtGitRepository >> gtChangesFor: aView context: aContext [
 						   margin: (BlInsets right: 8);
 						   whenUncheckedDo: [ 
 							   chosen remove: anIceNode value ifAbsent: [  ] ]).
-				   viewMap at: anIceNode value put: cb].
+				   boxes add: cb].
 			  element
 				  addChild:
 					  (anIceNode value icon asElement constraintsDo: [ :c | 
@@ -667,9 +667,7 @@ GtGitRepository >> gtChangesFor: aView context: aContext [
 						   constraintsDo: [ :c | c linear horizontal alignCenter ]) ];
 
 		  actionButtonLabel: 'Toggle All' action: [
-		  	changes do: [:change | change value hasChanges ifTrue: [ 
-		  		viewMap at: change value ifPresent: [:cb |
-		  			cb checked: cb isChecked not ]]]];
+		  	boxes do: [:cb| cb checked: cb isChecked not ]];
 
 		  actionDropdownButtonLabel: 'Commit'
 		  tooltip: 'Commit changes'
